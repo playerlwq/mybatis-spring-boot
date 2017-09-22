@@ -64,7 +64,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	 private AuthorizationIntercetor authorizationInterceptor;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+//        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
     
     @Override
@@ -73,25 +73,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     	super.addInterceptors(registry);
     }
 
-    //使用阿里 FastJson 作为JSON MessageConverter
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        FastJsonHttpMessageConverter4 converter = new FastJsonHttpMessageConverter4();
-        FastJsonConfig config = new FastJsonConfig();
-        config.setSerializerFeatures(SerializerFeature.WriteMapNullValue,//保留空的字段
-                SerializerFeature.WriteNullStringAsEmpty,//String null -> ""
-                SerializerFeature.WriteNullNumberAsZero);//Number null -> 0
-        converter.setFastJsonConfig(config);
-        converter.setCharset(Charset.forName("UTF-8"));
-        converters.add(converter);
-    }
     
-    
-    //解决跨域问题
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
-    }
     
     
     //统一异常处理

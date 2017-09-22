@@ -1,10 +1,20 @@
 package template.mybatis.springboot.model;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
 /**
  * 自定义返回结果
  * @author lwq
  */
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResultModel {
     /**
      * 返回码
@@ -24,82 +34,50 @@ public class ResultModel {
      */
     private long total;
 
-	public int getCode() {
-		return code;
-	}
+    public ResultModel(ResultStatus status) {
+        this.code = status.getCode();
+        this.message = status.getMessage();
+    }
+    public ResultModel(int code,String message) {
+        this.code = code;
+        this.message = message;
+    }
 
-	public void setCode(int code) {
-		this.code = code;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public Object getData() {
-		return data;
-	}
-
-	public void setData(Object data) {
-		this.data = data;
-	}
-
-	public long getTotal() {
-		return total;
-	}
-
-	public void setTotal(long total) {
-		this.total = total;
-	}
-    
-    
-    
+    public ResultModel(ResultStatus status, Object data) {
+        this.code = status.getCode();
+        this.message = status.getMessage();
+        this.data = data;
+    }
+    public ResultModel(ResultStatus status, Object data,long total) {
+        this.code = status.getCode();
+        this.message = status.getMessage();
+        this.data = data;
+        this.total=total;
+    }
 
 
-//    @Override
-//	public String toString() {
-//		return "ResultModel [code=" + code + ", message=" + message + ", data=" + data + ", total=" + total + "]";
-//	}
-//	public int getCode() {
-//		return code;
-//	}
-//	public ResultModel setCode(int code) {
-//		return this;
-//	}
-//	public String getMessage() {
-//		return message;
-//	}
-//	public ResultModel setMessage(String message) {
-//		return this;
-//	}
-//	public Object getData() {
-//		return data;
-//	}
-//	public ResultModel setData(Object data) {
-//		return this;
-//	}
-//	public long getTotal() {
-//		return total;
-//	}
-//	public ResultModel setTotal(long total) {
-//		return this;
-//	}
-//	
-//	public ResultModel() {
-//		// TODO Auto-generated constructor stub
-//	}
-//	public  ResultModel Builder(){
-//		return this;
-//	}
-	
-    
-    
-	
-	
-	
-  
+    public static ResultModel error(ResultStatus error) {
+        return new ResultModel(error);
+    }
+
+
+    public static ResponseEntity<ResultModel> fail(ResultStatus error) {
+        return  new ResponseEntity<>(ResultModel.error(error), HttpStatus.OK);
+    }
+
+    public static ResponseEntity<ResultModel> fail(int code,String message) {
+        return  new ResponseEntity<>(new ResultModel(code,message), HttpStatus.OK);
+    }
+    public static ResponseEntity<ResultModel> success() {
+        return  new ResponseEntity<>(new ResultModel(ResultStatus.SUCCESS), HttpStatus.OK);
+    }
+
+    public static ResponseEntity<ResultModel> success(Object data,long total) {
+        return  new ResponseEntity<>(new ResultModel(ResultStatus.SUCCESS,data,total), HttpStatus.OK);
+    }
+
+    public static ResponseEntity<ResultModel> success(Object data) {
+        return  new ResponseEntity<>(new ResultModel(ResultStatus.SUCCESS,data), HttpStatus.OK);
+    }
+
 }

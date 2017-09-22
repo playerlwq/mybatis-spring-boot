@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--
+        1.实现了日志根据不同的配置文件生成不同环境的日志
+        2.实现了自动清理7/30天的日志
+        3.实现了日志文件大于50M自动分割文件
+        4.实现了根据不同的类显示不同的颜色
+    -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <!--项目名称-->
+    <property name="PROJECT_NAME" value="cps"/>
+    <!-- test文件路径 -->
+    <!--<property name="PROD_FILE_PATH" value="e:/testlog"/>-->
+    <property name="TEST_FILE_PATH" value="/opt/cps_logs"/>
+    <!-- pro文件路径 -->
+    <property name="PROD_FILE_PATH" value="/opt/cps_logs"/>
+
+
+    <!--颜色打印-->
+    <appender name="PROJECT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss} - [%thread] %highlight(%-5level) %boldMagenta(%logger{15}) - %boldGreen(%msg) %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SQLPRINT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss} - [%thread] %highlight(%-5level) %yellow(%logger{15}) - %yellow(%msg) %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="HIKARICP" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss} - [%thread] %highlight(%-5level) %boldRed(%logger{15}) - %boldBlue(%msg) %n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 开发环境 -->
+    <springProfile name="dev">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
+
+        <logger name="com.cps" additivity="false" level="DEBUG">
+            <appender-ref ref="PROJECT" />
+        </logger>
+
+        <logger name="com.cps.dao" additivity="false" level="DEBUG">
+            <appender-ref ref="SQLPRINT" />
+        </logger>
+
+        <logger name="com.cps.druid" additivity="false" level="DEBUG">
+            <appender-ref ref="HIKARICP" />
+        </logger>
+
+    </springProfile>
+
+    <!-- 测试环境 -->
+    <springProfile name="test">
+
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <!-- ch.qos.logback.core.rolling.RollingFileAppender 文件日志输出 -->
+        <appender name="TEST-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <File>${TEST_FILE_PATH}/${PROJECT_NAME}.log</File>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>${TEST_FILE_PATH}/${PROJECT_NAME}.%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+                <MaxHistory>7</MaxHistory>
+                <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <MaxFileSize>50MB</MaxFileSize>
+                </TimeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </layout>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="TEST-FILE"/>
+        </root>
+
+
+        <logger name="com.cps" additivity="false" level="DEBUG">
+            <appender-ref ref="PROJECT" />
+            <appender-ref ref="TEST-FILE"/>
+        </logger>
+
+        <logger name="com.cps.dao" additivity="false" level="DEBUG">
+            <appender-ref ref="SQLPRINT" />
+            <appender-ref ref="TEST-FILE"/>
+        </logger>
+
+        <logger name="com.cps.druid" additivity="false" level="DEBUG">
+            <appender-ref ref="HIKARICP" />
+            <appender-ref ref="TEST-FILE"/>
+        </logger>
+
+    </springProfile>
+
+    <!-- 生产环境 -->
+    <springProfile name="prod">
+
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <!-- ch.qos.logback.core.rolling.RollingFileAppender 文件日志输出 -->
+        <appender name="PROD_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <File>${PROD_FILE_PATH}/${PROJECT_NAME}.log</File>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>${PRO_FILE_PATH}/${PROJECT_NAME}.%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+                <MaxHistory>30</MaxHistory>
+                <TimeBasedFileNamingAndTriggeringPolicy
+                        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <MaxFileSize>50MB</MaxFileSize>
+                </TimeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </layout>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="PROD_FILE"/>
+        </root>
+
+        <logger name="com.cps" additivity="false" level="DEBUG">
+            <appender-ref ref="PROJECT" />
+            <appender-ref ref="PROD_FILE"/>
+        </logger>
+
+        <logger name="com.cps.dao" additivity="false" level="DEBUG">
+            <appender-ref ref="SQLPRINT" />
+            <appender-ref ref="PROD_FILE"/>
+        </logger>
+
+        <logger name="com.cps.druid" additivity="false" level="DEBUG">
+            <appender-ref ref="HIKARICP" />
+            <appender-ref ref="PROD_FILE"/>
+        </logger>
+
+    </springProfile>
+
+</configuration>

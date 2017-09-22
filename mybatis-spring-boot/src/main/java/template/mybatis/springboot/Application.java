@@ -12,27 +12,16 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * @author liuzh
- * @since 2015-12-12 18:22
+ * @author lwq
  */
-@Controller
 @EnableWebMvc
 @SpringBootApplication
 @MapperScan(basePackages = "template.mybatis.springboot.mapper")
-public class Application extends WebMvcConfigurerAdapter implements CommandLineRunner {
+public class Application extends WebMvcConfigurerAdapter  {
     private Logger logger = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        logger.info("服务启动完成!");
-    }
-
-    @RequestMapping("/")
-    String home() {
-        return "redirect:countries";
-    }
 }

@@ -11,7 +11,6 @@ import com.xiaoleilu.hutool.crypto.SecureUtil;
 import com.xiaoleilu.hutool.json.JSONUtil;
 
 import lombok.Data;
-import net.minidev.json.JSONObject;
 import template.mybatis.springboot.authorization.model.TokenModel;
 
 /**

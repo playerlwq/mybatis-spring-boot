@@ -8,18 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.alibaba.druid.util.StringUtils;
-import com.sun.tools.javac.util.Constants;
-import com.xiaoleilu.hutool.lang.Console;
 
 import template.mybatis.springboot.authorization.annotation.Authorization;
-import template.mybatis.springboot.authorization.manager.impl.RedisTokenManager;
 import template.mybatis.springboot.authorization.manager.impl.TokenManager;
 /**
  *   
@@ -112,7 +108,7 @@ public class AuthorizationIntercetor extends HandlerInterceptorAdapter {
     private void returnJson(HttpServletResponse response, String json) throws Exception{
         PrintWriter writer = null;
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=utf-8");
+        response.setContentType("application/text;charset=utf-8");
         try {
             writer = response.getWriter();
             writer.print(json);

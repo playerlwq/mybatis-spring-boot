@@ -29,11 +29,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import template.mybatis.springboot.authorization.annotation.Authorization;
 import template.mybatis.springboot.authorization.manager.impl.TokenManager;
 import template.mybatis.springboot.authorization.model.TokenModel;
 import template.mybatis.springboot.model.ResultModel;
@@ -67,5 +68,18 @@ public class UserInfoController {
     		return ResultModel.fail(403, "用户名或密码错误");
     		
     	}
+    }
+    
+    /**
+     * 
+     * @param authorization token 取消授权
+     * @return
+     */
+    @RequestMapping("/loginOut")
+    @Authorization
+    public ResponseEntity<ResultModel> loginOut(@RequestHeader String authorization ) {
+    	tokenManager.deleteToken(authorization);
+    	 return ResultModel.success();
+    		
     }
 }

@@ -54,8 +54,7 @@ import template.mybatis.springboot.authorization.interceptor.AuthorizationInterc
 import template.mybatis.springboot.model.ResultModel;
 
 /**
- * @author liuzh
- * @since 2015-12-19 16:16
+ * @author lwq
  */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
@@ -64,7 +63,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	 private AuthorizationIntercetor authorizationInterceptor;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
     
     @Override
@@ -77,7 +76,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     
     
     //统一异常处理
-    @Override
+    /**
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
         exceptionResolvers.add(new HandlerExceptionResolver() {
             public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
@@ -114,10 +113,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
                 return new ModelAndView();
             }
         });
-    }
+    } */
 
-    
-    
     private String getIpAddress(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {

@@ -28,12 +28,15 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import template.mybatis.springboot.authorization.annotation.Authorization;
 import template.mybatis.springboot.authorization.manager.impl.TokenManager;
 import template.mybatis.springboot.authorization.model.TokenModel;
@@ -46,6 +49,7 @@ import template.mybatis.springboot.service.UserInfoService;
  */
 @RestController
 @RequestMapping("/users")
+@Api("用户授权操作")
 public class UserInfoController {
 
     @Autowired
@@ -58,7 +62,8 @@ public class UserInfoController {
      * 登录以及授权
      */
     @ResponseBody
-    @RequestMapping("/login")
+    @PostMapping("/login")
+    @ApiOperation("登录以及授权")
     public ResponseEntity<ResultModel> login(@RequestBody Map<String, String> request ) {
     	UserInfo login = userInfoService.login(request.get("username"), request.get("password"));
     	if(login!=null){
@@ -75,8 +80,9 @@ public class UserInfoController {
      * @param authorization token 取消授权
      * @return
      */
-    @RequestMapping("/loginOut")
+    @PostMapping("/loginOut")
     @Authorization
+    @ApiOperation("取消授权")
     public ResponseEntity<ResultModel> loginOut(@RequestHeader String authorization ) {
     	tokenManager.deleteToken(authorization);
     	 return ResultModel.success();
